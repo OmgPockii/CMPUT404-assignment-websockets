@@ -59,3 +59,9 @@ Contributors
 * Mark Galloway
 * Abram Hindle
 * Cole Mackenzie
+
+Sources/References
+============
+Referenced and used hazelybell's (Dr. Hazel Campbell) CMPUT404 WebSockets examples: https://github.com/uofa-cmput404/cmput404-slides/tree/master/examples/WebSocketsExamples
+* In sockets.py
+* And index.html
