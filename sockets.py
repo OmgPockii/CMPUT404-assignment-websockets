@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 import flask
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_sockets import Sockets
 import gevent
 from gevent import queue
@@ -26,7 +26,7 @@ app = Flask(__name__)
 sockets = Sockets(app)
 app.debug = True
 
-# Section below referenced and copied from hazelybel (on Github): https://github.com/uofa-cmput404/cmput404-slides/blob/master/examples/WebSocketsExamples/chat.py
+# Section below referenced and copied from hazelybell (on Github): https://github.com/uofa-cmput404/cmput404-slides/blob/master/examples/WebSocketsExamples/chat.py
 clients = list()
 
 def send_all(msg):
@@ -92,7 +92,7 @@ def hello():
     '''Return something coherent here.. perhaps redirect to /static/index.html '''
     return redirect("/static/index.html", code=302)
 
-# Function referenced and copied from hazelybel (on Github): https://github.com/uofa-cmput404/cmput404-slides/blob/master/examples/WebSocketsExamples/chat.py
+# Function referenced and copied from hazelybell (on Github): https://github.com/uofa-cmput404/cmput404-slides/blob/master/examples/WebSocketsExamples/chat.py
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
     try:
@@ -107,7 +107,7 @@ def read_ws(ws,client):
     except:
         '''Done'''
 
-# Function referenced and copied from hazelybel (on Github): https://github.com/uofa-cmput404/cmput404-slides/blob/master/examples/WebSocketsExamples/chat.py
+# Function referenced and copied from hazelybell (on Github): https://github.com/uofa-cmput404/cmput404-slides/blob/master/examples/WebSocketsExamples/chat.py
 @sockets.route('/subscribe')
 def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
@@ -142,24 +142,26 @@ def flask_post_json():
 @app.route("/entity/<entity>", methods=['POST','PUT'])
 def update(entity):
     '''update the entities via this interface'''
-    return None
+    for key, value in flask_post_json.items():
+        myWorld.update(entity, key, value)
+    return jsonify(myWorld.get(entity))
 
 @app.route("/world", methods=['POST','GET'])    
 def world():
     '''you should probably return the world here'''
-    return None
+    return jsonify(myWorld.world())
 
 @app.route("/entity/<entity>")    
 def get_entity(entity):
     '''This is the GET version of the entity interface, return a representation of the entity'''
-    return None
+    return jsonify(myWorld.get(entity))
 
 
 @app.route("/clear", methods=['POST','GET'])
 def clear():
     '''Clear the world out!'''
-    return None
-
+    myWorld.clear()
+    return jsonify(myWorld.world())
 
 
 if __name__ == "__main__":
